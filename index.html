@@ -358,57 +358,50 @@
     }
 
     /* ─── PROJECTS ───────────────────────────────────── */
-    .filter-tabs {
-      display: flex; flex-wrap: wrap; gap: .5rem;
-      margin-bottom: 2rem;
+    .project-category {
+      margin-bottom: 1.5rem;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(8,10,22,0.55);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
-    .filter-tab {
-      padding: .38rem 1rem;
-      border-radius: 999px;
-      font-size: .76rem;
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.1rem 1.5rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .category-header.cat-devops { border-left: 3px solid var(--accent3); }
+    .category-header.cat-ai     { border-left: 3px solid var(--accent); }
+    .category-header.cat-social { border-left: 3px solid var(--accent2); }
+    .category-header.cat-uni    { border-left: 3px solid #818cf8; }
+    .cat-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .cat-text { flex: 1; }
+    .cat-label { font-weight: 600; font-size: .92rem; color: var(--text); }
+    .cat-sublabel { font-size: .72rem; color: var(--muted); margin-top: .1rem; }
+    .cat-count {
       font-family: var(--mono);
-      cursor: pointer;
-      user-select: none;
-      transition: all .2s;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      font-size: .68rem;
       color: var(--muted);
-      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: .2rem .65rem;
+      flex-shrink: 0;
     }
-    .filter-tab:hover { border-color: rgba(167,139,250,0.4); color: var(--text); }
-    .filter-tab.active {
-      background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(37,99,235,0.3));
-      border-color: rgba(167,139,250,0.5);
-      color: var(--accent);
-      box-shadow: 0 0 16px rgba(124,58,237,0.2);
-    }
-    .filter-tab[data-filter="ai"].active {
-      background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(167,139,250,0.2));
-      border-color: rgba(167,139,250,0.6);
-      color: var(--accent);
-    }
-    .filter-tab[data-filter="devops"].active {
-      background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(52,211,153,0.15));
-      border-color: rgba(52,211,153,0.5);
-      color: var(--accent3);
-      box-shadow: 0 0 16px rgba(52,211,153,0.15);
-    }
-    .filter-tab[data-filter="social"].active {
-      background: linear-gradient(135deg, rgba(251,146,60,0.2), rgba(251,191,36,0.15));
-      border-color: rgba(251,146,60,0.5);
-      color: var(--warn);
-      box-shadow: 0 0 16px rgba(251,146,60,0.15);
-    }
-    .filter-tab[data-filter="university"].active {
-      background: linear-gradient(135deg, rgba(251,191,36,0.2), rgba(245,158,11,0.15));
-      border-color: rgba(251,191,36,0.5);
-      color: #fbbf24;
-      box-shadow: 0 0 16px rgba(251,191,36,0.15);
+    .cat-grid {
+      padding: 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
     }
 
     .project-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1rem;
     }
     .project-card[hidden] { display: none !important; }
@@ -450,30 +443,30 @@
       background: linear-gradient(135deg, rgba(52,211,153,0.06) 0%, transparent 60%);
     }
     .project-card[data-category="social"]:hover {
-      border-color: rgba(251,146,60,0.4);
-      box-shadow: 0 8px 40px rgba(251,146,60,0.2), 0 0 0 1px rgba(251,146,60,0.1);
+      border-color: rgba(34,211,238,0.4);
+      box-shadow: 0 8px 40px rgba(6,182,212,0.18), 0 0 0 1px rgba(34,211,238,0.1);
     }
     .project-card[data-category="social"]::before {
-      background: linear-gradient(135deg, rgba(251,146,60,0.06) 0%, transparent 60%);
+      background: linear-gradient(135deg, rgba(34,211,238,0.06) 0%, transparent 60%);
     }
     .project-card[data-category="university"]:hover {
-      border-color: rgba(251,191,36,0.4);
-      box-shadow: 0 8px 40px rgba(251,191,36,0.2), 0 0 0 1px rgba(251,191,36,0.1);
+      border-color: rgba(129,140,248,0.4);
+      box-shadow: 0 8px 40px rgba(99,102,241,0.18), 0 0 0 1px rgba(129,140,248,0.1);
     }
     .project-card[data-category="university"]::before {
-      background: linear-gradient(135deg, rgba(251,191,36,0.06) 0%, transparent 60%);
+      background: linear-gradient(135deg, rgba(129,140,248,0.06) 0%, transparent 60%);
     }
     .project-card[data-category="university"] .project-name {
-      background: linear-gradient(90deg, #fbbf24, #f97316);
+      background: linear-gradient(90deg, #818cf8, #a78bfa);
       -webkit-background-clip: text;
       background-clip: text;
     }
     .legacy-note {
       display: inline-flex; align-items: center; gap: .3rem;
       font-size: .62rem; font-family: var(--mono);
-      color: #fbbf24; opacity: 0.7;
-      background: rgba(251,191,36,0.08);
-      border: 1px solid rgba(251,191,36,0.2);
+      color: #818cf8; opacity: 0.85;
+      background: rgba(129,140,248,0.08);
+      border: 1px solid rgba(129,140,248,0.2);
       border-radius: 4px;
       padding: .1rem .4rem;
       margin-bottom: .5rem;
@@ -582,7 +575,7 @@
       background-clip: text;
     }
     .project-card[data-category="social"] .project-name {
-      background: linear-gradient(90deg, var(--warn), #fbbf24);
+      background: linear-gradient(90deg, var(--accent2), #22d3ee);
       -webkit-background-clip: text;
       background-clip: text;
     }
@@ -918,15 +911,177 @@
   <section id="projects">
     <h2 class="section-title">Projects</h2>
 
-    <div class="filter-tabs">
-      <button class="filter-tab active" data-filter="all">All (13)</button>
-      <button class="filter-tab" data-filter="ai">🤖 AI &amp; Agents</button>
-      <button class="filter-tab" data-filter="devops">☸️ DevOps &amp; Infra</button>
-      <button class="filter-tab" data-filter="social">📡 Social &amp; Streaming</button>
-      <button class="filter-tab" data-filter="university">🎓 University</button>
+    <!-- ── DevOps & Infrastructure ── -->
+    <div class="project-category reveal">
+      <div class="category-header cat-devops">
+        <span class="cat-icon">☸️</span>
+        <div class="cat-text">
+          <div class="cat-label">DevOps &amp; Infrastructure</div>
+          <div class="cat-sublabel">Cloud platforms, Kubernetes, and IaC</div>
+        </div>
+        <span class="cat-count">1 project</span>
+      </div>
+      <div class="cat-grid">
+        <a href="https://github.com/pjvjay/k8s-guestbook-monitoring" target="_blank" class="project-card" data-category="devops">
+          <div class="project-header"><span class="project-icon">☸️</span><span class="project-link-icon">↗</span></div>
+          <div class="project-name">k8s-guestbook-monitoring</div>
+          <div class="project-desc">Kubernetes Guestbook app with full Prometheus + Grafana monitoring stack, deployed via Pulumi IaC. Includes custom dashboards, alerting, and auto-scaling.</div>
+          <div class="project-tags">
+            <span class="project-tag">Kubernetes</span><span class="project-tag">Pulumi</span>
+            <span class="project-tag">Prometheus</span><span class="project-tag">TypeScript</span>
+          </div>
+        </a>
+      </div>
     </div>
 
-    <div class="project-grid reveal-group">
+    <!-- ── AI & Agents ── -->
+    <div class="project-category reveal">
+      <div class="category-header cat-ai">
+        <span class="cat-icon">🤖</span>
+        <div class="cat-text">
+          <div class="cat-label">AI &amp; Agents</div>
+          <div class="cat-sublabel">LLM pipelines, agentic workflows, and AI tooling</div>
+        </div>
+        <span class="cat-count">4 projects</span>
+      </div>
+      <div class="cat-grid">
+
+        <a href="https://github.com/pjvjay/llm-proxy" target="_blank" class="project-card" data-category="ai">
+          <div class="project-header"><span class="project-icon">🛡️</span><span class="project-link-icon">↗</span></div>
+          <div class="project-name">llm-proxy</div>
+          <div class="project-desc">Containerised reverse proxy that screens LLM prompts for harmful content using IBM Granite Guardian before forwarding to OpenAI. NGINX + mitmproxy + Docker Compose.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span><span class="project-tag">Docker</span>
+            <span class="project-tag">NGINX</span><span class="project-tag">mitmproxy</span><span class="project-tag">AI Safety</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/pjvjay/article-illustrator" target="_blank" class="project-card" data-category="ai">
+          <div class="project-header"><span class="project-icon">🖼️</span><span class="project-link-icon">↗</span></div>
+          <div class="project-name">article-illustrator</div>
+          <div class="project-desc">AI pipeline that auto-generates contextually relevant illustrations for markdown articles. Analyses content, generates prompts, creates and embeds images automatically.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span><span class="project-tag">Claude SDK</span>
+            <span class="project-tag">LangGraph</span><span class="project-tag">GenAI</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/pjvjay/transcribe" target="_blank" class="project-card" data-category="ai">
+          <div class="project-header"><span class="project-icon">📝</span><span class="project-link-icon">↗</span></div>
+          <div class="project-name">transcribe</div>
+          <div class="project-desc">Turns YouTube videos and audio files into searchable, quotable transcripts with AI-generated summaries, key quotes, and insights using Whisper + Claude.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span><span class="project-tag">Whisper</span>
+            <span class="project-tag">Claude SDK</span><span class="project-tag">LangGraph</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/pjvjay/web-to-md" target="_blank" class="project-card" data-category="ai">
+          <div class="project-header"><span class="project-icon">🌐</span><span class="project-link-icon">↗</span></div>
+          <div class="project-name">web-to-md</div>
+          <div class="project-desc">Modular tool that converts web pages into clean, AI-enhanced Markdown files — strips noise, preserves structure, and enriches content via Claude SDK.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span><span class="project-tag">Claude SDK</span>
+            <span class="project-tag">Markdown</span><span class="project-tag">Scraping</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ── Social & Streaming ── -->
+    <div class="project-category reveal">
+      <div class="category-header cat-social">
+        <span class="cat-icon">📡</span>
+        <div class="cat-text">
+          <div class="cat-label">Social &amp; Streaming</div>
+          <div class="cat-sublabel">Social platform automation, live stream tooling, and content analysis</div>
+        </div>
+        <span class="cat-count">4 projects</span>
+      </div>
+      <div class="cat-grid">
+
+        <a href="https://github.com/pjvjay/skyctl" target="_blank" class="project-card" data-category="social">
+          <div class="project-header"><span class="project-icon">🦋</span><span class="project-link-icon">↗</span></div>
+          <div class="project-name">skyctl</div>
+          <div class="project-desc">Multi-account Bluesky automation library and CLI. Post, reply, repost, and schedule across multiple accounts using the AT Protocol. Full Python SDK and Click CLI.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span><span class="project-tag">AT Protocol</span>
+            <span class="project-tag">CLI</span><span class="project-tag">APScheduler</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/pjvjay/reddit-truth-auditor" target="_blank" class="project-card" data-category="social">
+          <div class="project-header"><span class="project-icon">🔍</span><span class="project-link-icon">↗</span></div>
+          <div class="project-name">reddit-truth-auditor</div>
+          <div class="project-desc">Scores Reddit posts for factual accuracy using GPT-4o-mini + autonomous GPT-Researcher web agents for deep fact-checking. LangChain pipeline with structured JSON output.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span><span class="project-tag">LangChain</span>
+            <span class="project-tag">GPT-Researcher</span><span class="project-tag">Reddit API</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/pjvjay/kickvoice" target="_blank" class="project-card" data-category="social">
+          <div class="project-header"><span class="project-icon">🎙️</span><span class="project-link-icon">↗</span></div>
+          <div class="project-name">kickvoice</div>
+          <div class="project-desc">Real-time speaker identification on Kick.com live streams using ECAPA-TDNN voice embeddings and Silero VAD. Enroll speakers from YouTube videos, identify them live.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span><span class="project-tag">PyTorch</span>
+            <span class="project-tag">SpeechBrain</span><span class="project-tag">ML</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/pjvjay/kick-chat-monitor" target="_blank" class="project-card" data-category="social">
+          <div class="project-header"><span class="project-icon">💬</span><span class="project-link-icon">↗</span></div>
+          <div class="project-name">kick-chat-monitor</div>
+          <div class="project-desc">Real-time Kick.com chat monitor via Pusher WebSocket. Watchword filtering, colour-coded terminal output, JSONL logging with daily file rotation. No auth required.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span><span class="project-tag">WebSocket</span>
+            <span class="project-tag">Pusher</span><span class="project-tag">asyncio</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ── University Projects ── -->
+    <div class="project-category reveal">
+      <div class="category-header cat-uni">
+        <span class="cat-icon">🎓</span>
+        <div class="cat-text">
+          <div class="cat-label">University Projects</div>
+          <div class="cat-sublabel">Academic work from UIUC Computer Science — archived on pauljv92</div>
+        </div>
+        <span class="cat-count">2 projects</span>
+      </div>
+      <div class="cat-grid">
+
+        <a href="https://github.com/pauljv92/cs446_mapgen" target="_blank" class="project-card" data-category="university">
+          <div class="project-header"><span class="project-icon">🛰️</span><span class="project-link-icon">↗</span></div>
+          <div class="legacy-note">🎓 UIUC · CS 446 · 2015</div>
+          <div class="project-name">cs446_mapgen</div>
+          <div class="project-desc">Automated map generation from satellite images using image segmentation and a Random Forest classifier (Weka). Classifies regions as Buildings, Roads, Water, and Other.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span><span class="project-tag">Java</span>
+            <span class="project-tag">Weka</span><span class="project-tag">Random Forest</span><span class="project-tag">Google Maps API</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/pauljv92/3d_pong_android" target="_blank" class="project-card" data-category="university">
+          <div class="project-header"><span class="project-icon">🏓</span><span class="project-link-icon">↗</span></div>
+          <div class="legacy-note">🎓 UIUC · Honors Project · 2015</div>
+          <div class="project-name">3d_pong_android</div>
+          <div class="project-desc">Multiplayer 3D Pong game for Android using NFC for peer-to-peer device pairing. Real-time 3D rendering in C via JNI bridge with Java Android UI layer.</div>
+          <div class="project-tags">
+            <span class="project-tag">C</span><span class="project-tag">Java</span>
+            <span class="project-tag">Android</span><span class="project-tag">NFC</span><span class="project-tag">OpenGL</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
+    <div style="display:none">
 
       <a href="https://github.com/pjvjay/llm-proxy" target="_blank" class="project-card" data-category="ai">
         <div class="project-header">
