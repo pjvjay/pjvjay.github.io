@@ -11,18 +11,23 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #0d1117;
-      --bg2:      #161b22;
-      --bg3:      #21262d;
-      --border:   #30363d;
-      --text:     #e6edf3;
-      --muted:    #8b949e;
-      --accent:   #58a6ff;
-      --accent2:  #3fb950;
-      --accent3:  #d2a8ff;
-      --warn:     #f78166;
-      --mono:     'JetBrains Mono', monospace;
-      --sans:     'Inter', sans-serif;
+      --bg:        #08090f;
+      --bg2:       #0f1019;
+      --bg3:       #16182a;
+      --border:    rgba(255,255,255,0.07);
+      --border-h:  rgba(139,92,246,0.5);
+      --text:      #e8eaf6;
+      --muted:     #7b82a6;
+      --accent:    #a78bfa;       /* purple */
+      --accent2:   #38bdf8;       /* sky blue */
+      --accent3:   #34d399;       /* emerald */
+      --warn:      #fb923c;       /* orange */
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Inter', sans-serif;
+      --glass:     rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.08);
+      --glow-purple: rgba(139,92,246,0.25);
+      --glow-blue:   rgba(56,189,248,0.2);
     }
 
     html { scroll-behavior: smooth; }
@@ -33,330 +38,754 @@
       color: var(--text);
       line-height: 1.6;
       font-size: 15px;
+      overflow-x: hidden;
     }
 
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    /* ── NAV ─────────────────────────────────────────── */
+    /* ─── ANIMATED BACKGROUND ORBS ──────────────────── */
+    .orb-container {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.35;
+      animation: float linear infinite;
+    }
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #7c3aed, transparent 70%);
+      top: -200px; left: -150px;
+      animation-duration: 20s;
+      animation-delay: 0s;
+    }
+    .orb-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #0ea5e9, transparent 70%);
+      top: 20%; right: -200px;
+      animation-duration: 25s;
+      animation-delay: -8s;
+    }
+    .orb-3 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #8b5cf6, transparent 70%);
+      bottom: 10%; left: 30%;
+      animation-duration: 30s;
+      animation-delay: -15s;
+    }
+    .orb-4 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, #06b6d4, transparent 70%);
+      top: 60%; left: -100px;
+      animation-duration: 22s;
+      animation-delay: -5s;
+    }
+    .orb-5 {
+      width: 450px; height: 450px;
+      background: radial-gradient(circle, #4f46e5, transparent 70%);
+      bottom: -150px; right: 10%;
+      animation-duration: 28s;
+      animation-delay: -12s;
+    }
+
+    @keyframes float {
+      0%   { transform: translate(0px, 0px) scale(1); }
+      25%  { transform: translate(30px, -40px) scale(1.05); }
+      50%  { transform: translate(-20px, 50px) scale(0.95); }
+      75%  { transform: translate(40px, 20px) scale(1.02); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ──────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.025;
+    }
+
+    /* ─── LAYOUT ────────────────────────────────────── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    section { padding: 5rem 0; }
+    section + section { border-top: 1px solid var(--border); }
+
+    /* ─── GRADIENT TEXT ──────────────────────────────── */
+    .gradient-text {
+      background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 60%, #34d399 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ─── SECTION HEADINGS ───────────────────────────── */
+    h2.section-title {
+      font-size: 0.72rem;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      margin-bottom: 2.25rem;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    h2.section-title::before { content: '// '; opacity: 0.5; }
+
+    /* ─── NAV ────────────────────────────────────────── */
     nav {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(13,17,23,.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(8,9,15,0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
       padding: 0 2rem;
       display: flex; align-items: center; justify-content: space-between;
       height: 56px;
     }
     .nav-brand {
       font-family: var(--mono);
-      font-size: 0.9rem;
-      color: var(--accent);
+      font-size: 0.88rem;
       font-weight: 500;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .nav-brand span { color: var(--muted); }
+    .nav-brand span { opacity: 0.4; }
     .nav-links { display: flex; gap: 1.5rem; }
     .nav-links a {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--muted);
       transition: color .2s;
     }
     .nav-links a:hover { color: var(--text); text-decoration: none; }
 
-    /* ── LAYOUT ──────────────────────────────────────── */
-    .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
-
-    section { padding: 5rem 0; border-bottom: 1px solid var(--border); }
-    section:last-of-type { border-bottom: none; }
-
-    h2.section-title {
-      font-size: 0.75rem;
-      font-family: var(--mono);
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      margin-bottom: 2rem;
+    /* ─── GLASS CARD MIXIN ───────────────────────────── */
+    .glass {
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
     }
-    h2.section-title::before { content: '// '; color: var(--muted); }
 
-    /* ── HERO ────────────────────────────────────────── */
+    /* ─── HERO ───────────────────────────────────────── */
     #hero {
-      padding: 6rem 0 5rem;
-      display: flex; align-items: center; gap: 3rem;
-      border-bottom: 1px solid var(--border);
+      padding: 7rem 0 5rem;
+      display: flex;
+      align-items: center;
+      gap: 3rem;
     }
     .hero-avatar {
       flex-shrink: 0;
-      width: 120px; height: 120px;
+      width: 128px; height: 128px;
       border-radius: 50%;
-      border: 2px solid var(--border);
       overflow: hidden;
-      background: var(--bg3);
+      background: linear-gradient(135deg, #2d1b69, #1a1a3e);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow:
+        0 0 0 2px rgba(167,139,250,0.4),
+        0 0 40px rgba(139,92,246,0.3),
+        0 8px 32px rgba(0,0,0,0.5);
+      animation: avatar-pulse 4s ease-in-out infinite;
     }
-    .hero-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .hero-text {}
+    @keyframes avatar-pulse {
+      0%, 100% { box-shadow: 0 0 0 2px rgba(167,139,250,0.4), 0 0 40px rgba(139,92,246,0.3), 0 8px 32px rgba(0,0,0,0.5); }
+      50%       { box-shadow: 0 0 0 2px rgba(56,189,248,0.5), 0 0 60px rgba(56,189,248,0.35), 0 8px 32px rgba(0,0,0,0.5); }
+    }
+    .hero-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hero-avatar img[data-failed] { display: none; }
+    .avatar-initials {
+      display: none;
+      font-family: var(--mono);
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -.04em;
+      background: linear-gradient(135deg, #a78bfa, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      user-select: none;
+    }
+    .hero-avatar img[data-failed] ~ .avatar-initials { display: block; }
+
     .hero-greeting {
       font-family: var(--mono);
-      font-size: 0.85rem;
-      color: var(--accent2);
-      margin-bottom: .5rem;
+      font-size: 0.82rem;
+      color: var(--accent3);
+      margin-bottom: .6rem;
+      letter-spacing: .04em;
     }
     .hero-name {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-size: clamp(2rem, 5vw, 3.2rem);
       font-weight: 700;
-      line-height: 1.15;
-      letter-spacing: -.02em;
+      line-height: 1.1;
+      letter-spacing: -.03em;
       margin-bottom: .75rem;
+      background: linear-gradient(135deg, #e8eaf6 0%, #a78bfa 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .hero-title {
       font-size: 1rem;
       color: var(--muted);
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
       font-weight: 400;
+      max-width: 520px;
     }
     .hero-title strong { color: var(--text); font-weight: 500; }
-    .hero-badges { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.5rem; }
+
+    .hero-badges { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.75rem; }
     .badge {
       display: inline-flex; align-items: center; gap: .35rem;
-      background: var(--bg3);
-      border: 1px solid var(--border);
+      padding: .28rem .8rem;
       border-radius: 999px;
-      padding: .25rem .75rem;
-      font-size: .75rem;
-      color: var(--muted);
+      font-size: .72rem;
       font-family: var(--mono);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--muted);
+      backdrop-filter: blur(8px);
     }
-    .badge.accent { border-color: var(--accent); color: var(--accent); }
-    .badge.green  { border-color: var(--accent2); color: var(--accent2); }
-    .badge.purple { border-color: var(--accent3); color: var(--accent3); }
+    .badge.accent  { border-color: rgba(167,139,250,0.4); color: var(--accent); }
+    .badge.green   { border-color: rgba(52,211,153,0.4);  color: var(--accent3); }
+    .badge.blue    { border-color: rgba(56,189,248,0.4);  color: var(--accent2); }
+
     .hero-links { display: flex; flex-wrap: wrap; gap: .75rem; }
     .btn {
       display: inline-flex; align-items: center; gap: .4rem;
-      padding: .45rem 1rem;
-      border-radius: 6px;
-      font-size: .85rem;
+      padding: .5rem 1.1rem;
+      border-radius: 8px;
+      font-size: .84rem;
       font-weight: 500;
-      transition: opacity .2s;
+      transition: all .25s;
       cursor: pointer;
     }
-    .btn:hover { opacity: .85; text-decoration: none; }
-    .btn-primary { background: var(--accent); color: #0d1117; }
-    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
-
-    /* ── ABOUT ───────────────────────────────────────── */
-    #about p { color: var(--muted); max-width: 680px; margin-bottom: 1rem; }
-    #about p strong { color: var(--text); }
-    .stat-row { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 2rem; }
-    .stat {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem 1.5rem;
-      min-width: 140px;
+    .btn:hover { transform: translateY(-1px); text-decoration: none; }
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.4);
     }
-    .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--accent); font-family: var(--mono); }
-    .stat-label { font-size: .75rem; color: var(--muted); margin-top: .15rem; }
+    .btn-primary:hover { box-shadow: 0 6px 28px rgba(124,58,237,0.6); }
+    .btn-outline {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      color: var(--text);
+      backdrop-filter: blur(8px);
+    }
+    .btn-outline:hover { border-color: var(--border-h); }
 
-    /* ── STACK ───────────────────────────────────────── */
+    /* ─── ABOUT ──────────────────────────────────────── */
+    #about p { color: var(--muted); max-width: 700px; margin-bottom: 1rem; }
+    #about p strong { color: var(--text); }
+
+    .stat-row { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2.5rem; }
+    .stat {
+      flex: 1; min-width: 130px;
+      padding: 1.25rem 1.5rem;
+      border-radius: 12px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      transition: box-shadow .3s, transform .3s, border-color .3s;
+    }
+    .stat:hover {
+      transform: translateY(-3px);
+      border-color: rgba(167,139,250,0.3);
+      box-shadow: 0 8px 32px var(--glow-purple);
+    }
+    .stat-num {
+      font-size: 1.8rem; font-weight: 700;
+      font-family: var(--mono);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: .72rem; color: var(--muted); margin-top: .2rem; }
+
+    /* ─── STACK ──────────────────────────────────────── */
     .stack-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
       gap: 1rem;
     }
     .stack-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem 1.5rem;
+      padding: 1.4rem 1.5rem;
+      border-radius: 12px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      transition: border-color .3s, box-shadow .3s, transform .3s;
+    }
+    .stack-card:hover {
+      border-color: rgba(56,189,248,0.3);
+      box-shadow: 0 8px 32px var(--glow-blue);
+      transform: translateY(-2px);
     }
     .stack-card h3 {
-      font-size: .75rem;
+      font-size: .7rem;
       font-family: var(--mono);
-      color: var(--accent);
       text-transform: uppercase;
-      letter-spacing: .08em;
-      margin-bottom: .75rem;
+      letter-spacing: .1em;
+      margin-bottom: .85rem;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .tag-cloud { display: flex; flex-wrap: wrap; gap: .4rem; }
     .tag {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 5px;
       padding: .2rem .55rem;
-      font-size: .72rem;
+      font-size: .7rem;
       color: var(--text);
       font-family: var(--mono);
+      transition: background .2s, border-color .2s;
+    }
+    .tag:hover {
+      background: rgba(167,139,250,0.15);
+      border-color: rgba(167,139,250,0.3);
     }
 
-    /* ── PROJECTS ────────────────────────────────────── */
+    /* ─── PROJECTS ───────────────────────────────────── */
     .filter-tabs {
       display: flex; flex-wrap: wrap; gap: .5rem;
-      margin-bottom: 1.75rem;
+      margin-bottom: 2rem;
     }
     .filter-tab {
-      background: var(--bg2);
-      border: 1px solid var(--border);
+      padding: .38rem 1rem;
       border-radius: 999px;
-      padding: .35rem .9rem;
-      font-size: .78rem;
+      font-size: .76rem;
       font-family: var(--mono);
-      color: var(--muted);
       cursor: pointer;
-      transition: all .15s;
       user-select: none;
+      transition: all .2s;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      backdrop-filter: blur(8px);
     }
-    .filter-tab:hover { border-color: var(--accent); color: var(--text); }
-    .filter-tab.active { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 600; }
-    .filter-tab[data-filter="ai"].active     { background: var(--accent3); border-color: var(--accent3); }
-    .filter-tab[data-filter="devops"].active { background: var(--accent2); border-color: var(--accent2); color: #0d1117; }
-    .filter-tab[data-filter="social"].active { background: var(--warn);    border-color: var(--warn);    color: #0d1117; }
+    .filter-tab:hover { border-color: rgba(167,139,250,0.4); color: var(--text); }
+    .filter-tab.active {
+      background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(37,99,235,0.3));
+      border-color: rgba(167,139,250,0.5);
+      color: var(--accent);
+      box-shadow: 0 0 16px rgba(124,58,237,0.2);
+    }
+    .filter-tab[data-filter="ai"].active {
+      background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(167,139,250,0.2));
+      border-color: rgba(167,139,250,0.6);
+      color: var(--accent);
+    }
+    .filter-tab[data-filter="devops"].active {
+      background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(52,211,153,0.15));
+      border-color: rgba(52,211,153,0.5);
+      color: var(--accent3);
+      box-shadow: 0 0 16px rgba(52,211,153,0.15);
+    }
+    .filter-tab[data-filter="social"].active {
+      background: linear-gradient(135deg, rgba(251,146,60,0.2), rgba(251,191,36,0.15));
+      border-color: rgba(251,146,60,0.5);
+      color: var(--warn);
+      box-shadow: 0 0 16px rgba(251,146,60,0.15);
+    }
+    .filter-tab[data-filter="university"].active {
+      background: linear-gradient(135deg, rgba(251,191,36,0.2), rgba(245,158,11,0.15));
+      border-color: rgba(251,191,36,0.5);
+      color: #fbbf24;
+      box-shadow: 0 0 16px rgba(251,191,36,0.15);
+    }
 
     .project-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
       gap: 1rem;
     }
     .project-card[hidden] { display: none !important; }
     .project-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem 1.5rem;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 1.4rem 1.5rem;
       display: flex; flex-direction: column;
-      transition: border-color .2s, transform .2s;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: border-color .3s, box-shadow .3s, transform .3s, background .3s;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(167,139,250,0.06) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
     }
     .project-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
+      border-color: rgba(167,139,250,0.4);
+      box-shadow: 0 8px 40px rgba(124,58,237,0.25), 0 0 0 1px rgba(167,139,250,0.1);
+      transform: translateY(-4px);
       text-decoration: none;
     }
-    .project-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: .6rem; }
-    .project-icon { font-size: 1.2rem; }
-    .project-link-icon { color: var(--muted); font-size: .85rem; }
-    .project-name {
-      font-size: .9rem;
-      font-weight: 600;
-      font-family: var(--mono);
-      color: var(--accent);
-      margin-bottom: .4rem;
+    .project-card:hover::before { opacity: 1; }
+
+    .project-card[data-category="devops"]:hover {
+      border-color: rgba(52,211,153,0.4);
+      box-shadow: 0 8px 40px rgba(16,185,129,0.2), 0 0 0 1px rgba(52,211,153,0.1);
     }
-    .project-desc {
+    .project-card[data-category="devops"]::before {
+      background: linear-gradient(135deg, rgba(52,211,153,0.06) 0%, transparent 60%);
+    }
+    .project-card[data-category="social"]:hover {
+      border-color: rgba(251,146,60,0.4);
+      box-shadow: 0 8px 40px rgba(251,146,60,0.2), 0 0 0 1px rgba(251,146,60,0.1);
+    }
+    .project-card[data-category="social"]::before {
+      background: linear-gradient(135deg, rgba(251,146,60,0.06) 0%, transparent 60%);
+    }
+    .project-card[data-category="university"]:hover {
+      border-color: rgba(251,191,36,0.4);
+      box-shadow: 0 8px 40px rgba(251,191,36,0.2), 0 0 0 1px rgba(251,191,36,0.1);
+    }
+    .project-card[data-category="university"]::before {
+      background: linear-gradient(135deg, rgba(251,191,36,0.06) 0%, transparent 60%);
+    }
+    .project-card[data-category="university"] .project-name {
+      background: linear-gradient(90deg, #fbbf24, #f97316);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .legacy-note {
+      display: inline-flex; align-items: center; gap: .3rem;
+      font-size: .62rem; font-family: var(--mono);
+      color: #fbbf24; opacity: 0.7;
+      background: rgba(251,191,36,0.08);
+      border: 1px solid rgba(251,191,36,0.2);
+      border-radius: 4px;
+      padding: .1rem .4rem;
+      margin-bottom: .5rem;
+    }
+
+    /* ─── RESEARCH SECTION ───────────────────────────── */
+    .paper-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 2rem 2.25rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: border-color .3s, box-shadow .3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .paper-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+    }
+    .paper-card:hover {
+      border-color: rgba(167,139,250,0.35);
+      box-shadow: 0 12px 48px rgba(124,58,237,0.2);
+    }
+    .paper-venue {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: .72rem; font-family: var(--mono);
+      color: var(--accent2);
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: 999px;
+      padding: .25rem .75rem;
+      margin-bottom: 1rem;
+    }
+    .paper-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      line-height: 1.3;
+      margin-bottom: .85rem;
+      background: linear-gradient(135deg, #e8eaf6, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .paper-authors {
       font-size: .8rem;
       color: var(--muted);
-      flex: 1;
-      margin-bottom: .85rem;
+      margin-bottom: 1rem;
       line-height: 1.5;
     }
-    .project-tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .paper-authors strong { color: var(--accent); -webkit-text-fill-color: var(--accent); }
+    .paper-abstract {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 1.25rem;
+      border-left: 2px solid rgba(167,139,250,0.3);
+      padding-left: 1rem;
+    }
+    .paper-links { display: flex; flex-wrap: wrap; gap: .65rem; }
+    .paper-link {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .4rem .9rem;
+      border-radius: 7px;
+      font-size: .78rem;
+      font-weight: 500;
+      font-family: var(--mono);
+      transition: all .2s;
+    }
+    .paper-link:hover { transform: translateY(-1px); text-decoration: none; }
+    .paper-link-primary {
+      background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(37,99,235,0.3));
+      border: 1px solid rgba(167,139,250,0.4);
+      color: var(--accent);
+    }
+    .paper-link-primary:hover { box-shadow: 0 4px 16px rgba(124,58,237,0.3); }
+    .paper-link-secondary {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+    }
+    .paper-link-secondary:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
+
+    .project-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: .65rem; }
+    .project-icon { font-size: 1.3rem; }
+    .project-link-icon { color: var(--muted); font-size: .9rem; transition: color .2s; }
+    .project-card:hover .project-link-icon { color: var(--accent); }
+    .project-name {
+      font-size: .88rem;
+      font-weight: 600;
+      font-family: var(--mono);
+      margin-bottom: .45rem;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .project-card[data-category="devops"] .project-name {
+      background: linear-gradient(90deg, var(--accent3), #22d3ee);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .project-card[data-category="social"] .project-name {
+      background: linear-gradient(90deg, var(--warn), #fbbf24);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .project-desc {
+      font-size: .78rem;
+      color: var(--muted);
+      flex: 1;
+      margin-bottom: .9rem;
+      line-height: 1.55;
+    }
+    .project-tags { display: flex; flex-wrap: wrap; gap: .3rem; }
     .project-tag {
-      background: var(--bg3);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
       border-radius: 4px;
       padding: .15rem .45rem;
-      font-size: .65rem;
+      font-size: .62rem;
       color: var(--muted);
       font-family: var(--mono);
     }
 
-    /* ── EXPERIENCE ──────────────────────────────────── */
-    .timeline { position: relative; padding-left: 1.5rem; }
+    /* ─── EXPERIENCE ─────────────────────────────────── */
+    .timeline { position: relative; padding-left: 2rem; }
     .timeline::before {
       content: '';
       position: absolute; left: 0; top: .4rem; bottom: 0;
-      width: 1px; background: var(--border);
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
     }
-    .timeline-item { position: relative; margin-bottom: 2.5rem; }
-    .timeline-item::before {
-      content: '';
-      position: absolute; left: -1.5rem; top: .45rem;
-      width: 7px; height: 7px;
+    .timeline-item { position: relative; margin-bottom: 2.75rem; }
+    .timeline-dot {
+      position: absolute; left: -2rem;
+      top: .4rem;
+      width: 9px; height: 9px;
       border-radius: 50%;
-      background: var(--accent);
-      border: 1px solid var(--bg);
-      box-shadow: 0 0 0 3px var(--bg2);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 12px rgba(167,139,250,0.6);
+      margin-left: -4px;
+    }
+    .timeline-box {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.4rem 1.5rem;
+      backdrop-filter: blur(16px);
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .timeline-box:hover {
+      border-color: rgba(167,139,250,0.3);
+      box-shadow: 0 4px 24px rgba(124,58,237,0.15);
     }
     .timeline-meta {
       display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem;
-      margin-bottom: .3rem;
+      margin-bottom: .25rem;
     }
-    .timeline-role { font-weight: 600; font-size: .95rem; }
-    .timeline-company { color: var(--accent); font-weight: 500; }
+    .timeline-role { font-weight: 600; font-size: .92rem; }
+    .timeline-company {
+      font-weight: 500;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
     .timeline-period {
-      font-size: .75rem;
+      font-size: .72rem;
       color: var(--muted);
       font-family: var(--mono);
       margin-left: auto;
     }
-    .timeline-loc { font-size: .75rem; color: var(--muted); }
+    .timeline-loc { font-size: .72rem; color: var(--muted); margin-bottom: .65rem; }
     .timeline-body {
-      font-size: .82rem;
+      font-size: .8rem;
       color: var(--muted);
-      margin-top: .5rem;
-      line-height: 1.6;
+      line-height: 1.65;
     }
     .timeline-body li { margin-bottom: .3rem; margin-left: 1rem; }
-    .timeline-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .75rem; }
+    .timeline-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .85rem; }
     .timeline-tag {
-      background: var(--bg3);
-      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
       border-radius: 4px;
       padding: .15rem .45rem;
-      font-size: .65rem;
+      font-size: .62rem;
       color: var(--muted);
       font-family: var(--mono);
     }
 
-    /* ── CERTS ───────────────────────────────────────── */
+    /* ─── CERTS ──────────────────────────────────────── */
     .cert-row { display: flex; flex-wrap: wrap; gap: 1rem; }
     .cert-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      display: flex; align-items: center; gap: .85rem;
       flex: 1; min-width: 240px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.1rem 1.4rem;
+      display: flex; align-items: center; gap: .9rem;
+      backdrop-filter: blur(16px);
+      transition: border-color .3s, box-shadow .3s, transform .3s;
     }
-    .cert-icon { font-size: 1.5rem; }
-    .cert-name { font-weight: 600; font-size: .85rem; }
-    .cert-date { font-size: .72rem; color: var(--muted); font-family: var(--mono); }
+    .cert-card:hover {
+      border-color: rgba(167,139,250,0.3);
+      box-shadow: 0 6px 24px var(--glow-purple);
+      transform: translateY(-2px);
+    }
+    .cert-icon { font-size: 1.6rem; }
+    .cert-name { font-weight: 600; font-size: .84rem; }
+    .cert-date { font-size: .7rem; color: var(--muted); font-family: var(--mono); margin-top: .15rem; }
 
-    /* ── CONTACT ─────────────────────────────────────── */
-    #contact { padding-bottom: 5rem; }
+    /* ─── CONTACT ────────────────────────────────────── */
     .contact-grid { display: flex; flex-wrap: wrap; gap: 1rem; }
     .contact-link {
-      display: inline-flex; align-items: center; gap: .6rem;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: .75rem 1.25rem;
-      font-size: .85rem;
+      display: inline-flex; align-items: center; gap: .65rem;
+      padding: .85rem 1.35rem;
+      border-radius: 12px;
+      font-size: .84rem;
       color: var(--text);
-      transition: border-color .2s;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      transition: border-color .3s, box-shadow .3s, transform .3s;
     }
-    .contact-link:hover { border-color: var(--accent); text-decoration: none; }
-    .contact-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .contact-link:hover {
+      border-color: rgba(167,139,250,0.4);
+      box-shadow: 0 6px 24px var(--glow-purple);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+    .contact-link svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.7; }
 
-    /* ── FOOTER ──────────────────────────────────────── */
+    /* ─── FOOTER ─────────────────────────────────────── */
     footer {
       text-align: center;
-      padding: 2rem;
-      font-size: .75rem;
+      padding: 2.5rem 2rem;
+      font-size: .72rem;
       color: var(--muted);
       font-family: var(--mono);
       border-top: 1px solid var(--border);
+      position: relative; z-index: 10;
     }
 
-    /* ── RESPONSIVE ──────────────────────────────────── */
-    @media (max-width: 600px) {
-      #hero { flex-direction: column; gap: 1.5rem; }
-      .hero-avatar { width: 80px; height: 80px; }
+    /* ─── SCROLL ANIMATIONS ──────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* staggered children */
+    .reveal-group > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .reveal-group.visible > * { opacity: 1; transform: translateY(0); }
+    .reveal-group.visible > *:nth-child(1) { transition-delay: 0s; }
+    .reveal-group.visible > *:nth-child(2) { transition-delay: .07s; }
+    .reveal-group.visible > *:nth-child(3) { transition-delay: .14s; }
+    .reveal-group.visible > *:nth-child(4) { transition-delay: .21s; }
+    .reveal-group.visible > *:nth-child(5) { transition-delay: .28s; }
+    .reveal-group.visible > *:nth-child(6) { transition-delay: .35s; }
+    .reveal-group.visible > *:nth-child(7) { transition-delay: .42s; }
+    .reveal-group.visible > *:nth-child(8) { transition-delay: .49s; }
+    .reveal-group.visible > *:nth-child(9) { transition-delay: .56s; }
+    .reveal-group.visible > *:nth-child(10) { transition-delay: .63s; }
+    .reveal-group.visible > *:nth-child(11) { transition-delay: .70s; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 640px) {
+      #hero { flex-direction: column; gap: 2rem; padding-top: 5rem; }
+      .hero-avatar { width: 96px; height: 96px; }
       nav { padding: 0 1rem; }
       .container { padding: 0 1rem; }
       .timeline-period { margin-left: 0; width: 100%; }
+      .orb { opacity: 0.2; }
     }
   </style>
 </head>
 <body>
+
+<!-- ANIMATED ORBS -->
+<div class="orb-container" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+  <div class="orb orb-5"></div>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -366,6 +795,7 @@
     <a href="#stack">Stack</a>
     <a href="#projects">Projects</a>
     <a href="#experience">Experience</a>
+    <a href="#research">Research</a>
     <a href="#contact">Contact</a>
   </div>
 </nav>
@@ -374,22 +804,23 @@
 <div class="container">
   <section id="hero">
     <div class="hero-avatar">
-      <!-- Pulls your GitHub avatar automatically -->
-      <img src="https://avatars.githubusercontent.com/pjvjay" alt="Paul Vijayakumar" onerror="this.src='https://github.com/identicons/pjvjay.png'">
+      <img src="https://avatars.githubusercontent.com/pjvjay" alt="Paul Vijayakumar"
+           onerror="this.setAttribute('data-failed',''); this.onerror=null;">
+      <span class="avatar-initials" aria-hidden="true">PV</span>
     </div>
     <div class="hero-text">
       <div class="hero-greeting">$ whoami</div>
       <h1 class="hero-name">Paul Vijayakumar</h1>
       <p class="hero-title">
-        <strong>Senior Software & DevOps Engineer</strong> ·
-        9+ years across AWS, GCP, and Kubernetes ·
-        Building AI-powered tools
+        <strong>Senior Software &amp; DevOps Engineer</strong> ·
+        9+ years across AWS, GCP &amp; Kubernetes ·
+        Building AI-powered tools that actually ship
       </p>
       <div class="hero-badges">
         <span class="badge green">🟢 Open to opportunities</span>
         <span class="badge accent">☁️ AWS Solutions Architect Pro</span>
-        <span class="badge">📍 Burnaby, BC, Canada</span>
-        <span class="badge purple">🎓 UIUC CS '16</span>
+        <span class="badge">📍 Burnaby, BC</span>
+        <span class="badge blue">🎓 UIUC CS '16</span>
       </div>
       <div class="hero-links">
         <a href="https://github.com/pjvjay" class="btn btn-primary" target="_blank">
@@ -413,22 +844,24 @@
 <div class="container">
   <section id="about">
     <h2 class="section-title">About</h2>
-    <p>
-      I'm a senior engineer with <strong>9+ years</strong> building and operating distributed systems across AWS and GCP.
-      My background spans the full platform stack — Kubernetes clusters, event-driven data pipelines, IaC, GitOps CI/CD,
-      and production observability — with a recent focus on <strong>GenAI tooling, LLMOps, and agentic systems</strong>.
-    </p>
-    <p>
-      I've done this at companies like <strong>Amazon</strong>, <strong>Google/Apigee</strong>, and <strong>PayPal</strong>,
-      and I keep building things outside of work — ML tools for live streams, content filtering proxies,
-      social media automation, and AI-powered writing utilities.
-    </p>
-    <p>
-      I hold an <strong>AWS Certified Solutions Architect — Professional</strong> and a B.Sc. in Computer Science
-      (Statistics Minor) from the University of Illinois at Urbana-Champaign, where I also published
-      <a href="http://www.lrec-conf.org/proceedings/lrec2016/pdf/999_Paper.pdf" target="_blank">NLP research at LREC 2016</a>.
-    </p>
-    <div class="stat-row">
+    <div class="reveal">
+      <p>
+        I'm a senior engineer with <strong>9+ years</strong> building and operating distributed systems across AWS and GCP.
+        My background spans the full platform stack — Kubernetes clusters, event-driven data pipelines, IaC, GitOps CI/CD,
+        and production observability — with a recent focus on <strong>GenAI tooling, LLMOps, and agentic systems</strong>.
+      </p>
+      <p>
+        I've done this at companies like <strong>Amazon</strong>, <strong>Google/Apigee</strong>, and <strong>PayPal</strong>,
+        and I keep building things outside of work — ML tools for live streams, content filtering proxies,
+        social media automation, and AI-powered writing utilities.
+      </p>
+      <p>
+        I hold an <strong>AWS Certified Solutions Architect — Professional</strong> and a B.Sc. in Computer Science
+        (Statistics Minor) from the University of Illinois at Urbana-Champaign, where I also published
+        <a href="http://www.lrec-conf.org/proceedings/lrec2016/pdf/999_Paper.pdf" target="_blank">NLP research at LREC 2016</a>.
+      </p>
+    </div>
+    <div class="stat-row reveal-group">
       <div class="stat"><div class="stat-num">9+</div><div class="stat-label">Years experience</div></div>
       <div class="stat"><div class="stat-num">50%</div><div class="stat-label">Ops toil reduction at Amazon</div></div>
       <div class="stat"><div class="stat-num">80%</div><div class="stat-label">Cost reduction at PitchPoint</div></div>
@@ -441,7 +874,7 @@
 <div class="container">
   <section id="stack">
     <h2 class="section-title">Stack</h2>
-    <div class="stack-grid">
+    <div class="stack-grid reveal-group">
       <div class="stack-card">
         <h3>Cloud</h3>
         <div class="tag-cloud">
@@ -452,7 +885,7 @@
         </div>
       </div>
       <div class="stack-card">
-        <h3>Containers & Orchestration</h3>
+        <h3>Containers &amp; Orchestration</h3>
         <div class="tag-cloud">
           <span class="tag">Kubernetes</span><span class="tag">Helm</span><span class="tag">Docker</span>
           <span class="tag">ECS/Fargate</span><span class="tag">ArgoCD</span><span class="tag">Spinnaker</span>
@@ -460,7 +893,7 @@
         </div>
       </div>
       <div class="stack-card">
-        <h3>IaC & DevOps</h3>
+        <h3>IaC &amp; DevOps</h3>
         <div class="tag-cloud">
           <span class="tag">Terraform</span><span class="tag">Pulumi</span><span class="tag">Ansible</span>
           <span class="tag">Jenkins</span><span class="tag">GitOps</span><span class="tag">Airflow</span>
@@ -475,7 +908,7 @@
         </div>
       </div>
       <div class="stack-card">
-        <h3>AI & Data</h3>
+        <h3>AI &amp; Data</h3>
         <div class="tag-cloud">
           <span class="tag">Claude SDK</span><span class="tag">LangChain</span><span class="tag">LangGraph</span>
           <span class="tag">RAG</span><span class="tag">LLMOps</span><span class="tag">AWS Bedrock</span>
@@ -500,13 +933,14 @@
     <h2 class="section-title">Projects</h2>
 
     <div class="filter-tabs">
-      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab active" data-filter="all">All (13)</button>
       <button class="filter-tab" data-filter="ai">🤖 AI &amp; Agents</button>
       <button class="filter-tab" data-filter="devops">☸️ DevOps &amp; Infra</button>
       <button class="filter-tab" data-filter="social">📡 Social &amp; Streaming</button>
+      <button class="filter-tab" data-filter="university">🎓 University</button>
     </div>
 
-    <div class="project-grid">
+    <div class="project-grid reveal-group">
 
       <a href="https://github.com/pjvjay/llm-proxy" target="_blank" class="project-card" data-category="ai">
         <div class="project-header">
@@ -517,46 +951,20 @@
         <div class="project-desc">Containerised reverse proxy that screens LLM prompts for harmful content using IBM Granite Guardian before forwarding to OpenAI. NGINX + mitmproxy + Docker Compose.</div>
         <div class="project-tags">
           <span class="project-tag">Python</span><span class="project-tag">Docker</span>
-          <span class="project-tag">NGINX</span><span class="project-tag">mitmproxy</span><span class="project-tag">AI</span>
+          <span class="project-tag">NGINX</span><span class="project-tag">mitmproxy</span><span class="project-tag">AI Safety</span>
         </div>
       </a>
 
-      <a href="https://github.com/pjvjay/kickvoice" target="_blank" class="project-card" data-category="social">
+      <a href="https://github.com/pjvjay/article-illustrator" target="_blank" class="project-card" data-category="ai">
         <div class="project-header">
-          <span class="project-icon">🎙️</span>
+          <span class="project-icon">🖼️</span>
           <span class="project-link-icon">↗</span>
         </div>
-        <div class="project-name">kickvoice</div>
-        <div class="project-desc">Real-time speaker identification on Kick.com live streams using ECAPA-TDNN voice embeddings and Silero VAD. Enroll speakers from YouTube videos, identify them live.</div>
+        <div class="project-name">article-illustrator</div>
+        <div class="project-desc">AI pipeline that auto-generates contextually relevant illustrations for markdown articles. Analyses content, generates prompts, creates and embeds images automatically.</div>
         <div class="project-tags">
-          <span class="project-tag">Python</span><span class="project-tag">PyTorch</span>
-          <span class="project-tag">SpeechBrain</span><span class="project-tag">ML</span>
-        </div>
-      </a>
-
-      <a href="https://github.com/pjvjay/k8s-guestbook-monitoring" target="_blank" class="project-card" data-category="devops">
-        <div class="project-header">
-          <span class="project-icon">☸️</span>
-          <span class="project-link-icon">↗</span>
-        </div>
-        <div class="project-name">k8s-guestbook-monitoring</div>
-        <div class="project-desc">Kubernetes Guestbook app with full Prometheus + Grafana monitoring stack, deployed via Pulumi IaC. Includes custom dashboards and alerting.</div>
-        <div class="project-tags">
-          <span class="project-tag">Kubernetes</span><span class="project-tag">Pulumi</span>
-          <span class="project-tag">Prometheus</span><span class="project-tag">TypeScript</span>
-        </div>
-      </a>
-
-      <a href="https://github.com/pjvjay/skyctl" target="_blank" class="project-card" data-category="social">
-        <div class="project-header">
-          <span class="project-icon">🦋</span>
-          <span class="project-link-icon">↗</span>
-        </div>
-        <div class="project-name">skyctl</div>
-        <div class="project-desc">Multi-account Bluesky automation library and CLI. Post, reply, repost, and schedule across multiple accounts. Full Python SDK and Click CLI.</div>
-        <div class="project-tags">
-          <span class="project-tag">Python</span><span class="project-tag">AT Protocol</span>
-          <span class="project-tag">CLI</span><span class="project-tag">APScheduler</span>
+          <span class="project-tag">Python</span><span class="project-tag">Claude SDK</span>
+          <span class="project-tag">LangGraph</span><span class="project-tag">GenAI</span>
         </div>
       </a>
 
@@ -566,7 +974,7 @@
           <span class="project-link-icon">↗</span>
         </div>
         <div class="project-name">transcribe</div>
-        <div class="project-desc">Turns YouTube videos and audio files into searchable, quotable transcripts with AI-generated summaries, quotes, and insights using Whisper + Claude.</div>
+        <div class="project-desc">Turns YouTube videos and audio files into searchable, quotable transcripts with AI-generated summaries, key quotes, and insights using Whisper + Claude.</div>
         <div class="project-tags">
           <span class="project-tag">Python</span><span class="project-tag">Whisper</span>
           <span class="project-tag">Claude SDK</span><span class="project-tag">LangGraph</span>
@@ -586,16 +994,81 @@
         </div>
       </a>
 
-      <a href="https://github.com/pjvjay/article-illustrator" target="_blank" class="project-card" data-category="ai">
+      <a href="https://github.com/pjvjay/blog-writer" target="_blank" class="project-card" data-category="ai">
         <div class="project-header">
-          <span class="project-icon">🖼️</span>
+          <span class="project-icon">✍️</span>
           <span class="project-link-icon">↗</span>
         </div>
-        <div class="project-name">article-illustrator</div>
-        <div class="project-desc">AI pipeline that auto-generates contextually relevant illustrations for markdown articles. Analyses content, generates prompts, creates and embeds images.</div>
+        <div class="project-name">blog-writer</div>
+        <div class="project-desc">Transforms rough notes into polished blog posts that match your writing style using AI. Built with Claude SDK and a LangGraph multi-step pipeline.</div>
         <div class="project-tags">
           <span class="project-tag">Python</span><span class="project-tag">Claude SDK</span>
           <span class="project-tag">LangGraph</span><span class="project-tag">GenAI</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/pjvjay/web-to-md" target="_blank" class="project-card" data-category="ai">
+        <div class="project-header">
+          <span class="project-icon">🌐</span>
+          <span class="project-link-icon">↗</span>
+        </div>
+        <div class="project-name">web-to-md</div>
+        <div class="project-desc">Modular tool that converts web pages into clean, AI-enhanced Markdown files — strips noise, preserves structure, and enriches content via Claude SDK.</div>
+        <div class="project-tags">
+          <span class="project-tag">Python</span><span class="project-tag">Claude SDK</span>
+          <span class="project-tag">Markdown</span><span class="project-tag">Scraping</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/pjvjay/tips-synthesizer" target="_blank" class="project-card" data-category="ai">
+        <div class="project-header">
+          <span class="project-icon">💡</span>
+          <span class="project-link-icon">↗</span>
+        </div>
+        <div class="project-name">tips-synthesizer</div>
+        <div class="project-desc">Turns scattered tips and tricks into cohesive, well-organized guides using AI. Deduplicates, groups, and formats raw knowledge into digestible reference docs.</div>
+        <div class="project-tags">
+          <span class="project-tag">Python</span><span class="project-tag">Claude SDK</span>
+          <span class="project-tag">GenAI</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/pjvjay/k8s-guestbook-monitoring" target="_blank" class="project-card" data-category="devops">
+        <div class="project-header">
+          <span class="project-icon">☸️</span>
+          <span class="project-link-icon">↗</span>
+        </div>
+        <div class="project-name">k8s-guestbook-monitoring</div>
+        <div class="project-desc">Kubernetes Guestbook app with full Prometheus + Grafana monitoring stack, deployed via Pulumi IaC. Includes custom dashboards, alerting, and auto-scaling.</div>
+        <div class="project-tags">
+          <span class="project-tag">Kubernetes</span><span class="project-tag">Pulumi</span>
+          <span class="project-tag">Prometheus</span><span class="project-tag">TypeScript</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/pjvjay/skyctl" target="_blank" class="project-card" data-category="social">
+        <div class="project-header">
+          <span class="project-icon">🦋</span>
+          <span class="project-link-icon">↗</span>
+        </div>
+        <div class="project-name">skyctl</div>
+        <div class="project-desc">Multi-account Bluesky automation library and CLI. Post, reply, repost, and schedule across multiple accounts using the AT Protocol. Full Python SDK and Click CLI.</div>
+        <div class="project-tags">
+          <span class="project-tag">Python</span><span class="project-tag">AT Protocol</span>
+          <span class="project-tag">CLI</span><span class="project-tag">APScheduler</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/pjvjay/kickvoice" target="_blank" class="project-card" data-category="social">
+        <div class="project-header">
+          <span class="project-icon">🎙️</span>
+          <span class="project-link-icon">↗</span>
+        </div>
+        <div class="project-name">kickvoice</div>
+        <div class="project-desc">Real-time speaker identification on Kick.com live streams using ECAPA-TDNN voice embeddings and Silero VAD. Enroll speakers from YouTube videos, identify them live.</div>
+        <div class="project-tags">
+          <span class="project-tag">Python</span><span class="project-tag">PyTorch</span>
+          <span class="project-tag">SpeechBrain</span><span class="project-tag">ML</span>
         </div>
       </a>
 
@@ -612,6 +1085,34 @@
         </div>
       </a>
 
+      <a href="https://github.com/pauljv92/cs446_mapgen" target="_blank" class="project-card" data-category="university">
+        <div class="project-header">
+          <span class="project-icon">🛰️</span>
+          <span class="project-link-icon">↗</span>
+        </div>
+        <div class="legacy-note">🎓 UIUC · CS 446 · 2015</div>
+        <div class="project-name">cs446_mapgen</div>
+        <div class="project-desc">Automated map generation from satellite images using image segmentation and a Random Forest classifier (Weka). Classifies regions as Buildings, Roads, Water, and Other with colour-coded output.</div>
+        <div class="project-tags">
+          <span class="project-tag">Python</span><span class="project-tag">Java</span>
+          <span class="project-tag">Weka</span><span class="project-tag">Random Forest</span><span class="project-tag">Google Maps API</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/pauljv92/3d_pong_android" target="_blank" class="project-card" data-category="university">
+        <div class="project-header">
+          <span class="project-icon">🏓</span>
+          <span class="project-link-icon">↗</span>
+        </div>
+        <div class="legacy-note">🎓 UIUC · Honors Project · 2015</div>
+        <div class="project-name">3d_pong_android</div>
+        <div class="project-desc">Multiplayer 3D Pong game for Android using NFC for peer-to-peer device pairing. Real-time 3D rendering in C via JNI bridge with Java Android UI layer.</div>
+        <div class="project-tags">
+          <span class="project-tag">C</span><span class="project-tag">Java</span>
+          <span class="project-tag">Android</span><span class="project-tag">NFC</span><span class="project-tag">OpenGL</span>
+        </div>
+      </a>
+
     </div>
   </section>
 </div>
@@ -622,101 +1123,116 @@
     <h2 class="section-title">Experience</h2>
     <div class="timeline">
 
-      <div class="timeline-item">
-        <div class="timeline-meta">
-          <span class="timeline-role">Senior IT DevOps Developer</span>
-          <span>·</span>
-          <span class="timeline-company">Upgrade Tech Inc.</span>
-          <span class="timeline-period">Jan 2025 – Feb 2026</span>
-        </div>
-        <div class="timeline-loc">Remote, Canada</div>
-        <ul class="timeline-body">
-          <li>Operationalized enterprise chatbots on Kore.ai → Sierra.ai; integrated RAG service for customer Q&A with LLM-based developer chatbot framework</li>
-          <li>Designed LLMOps practices for multi-agent system — prompt engineering, agentic workflows, blue-green release patterns, incident runbooks</li>
-          <li>Built LLM-as-a-judge test-generation framework to automate evaluation of customer-service workflows</li>
-          <li>Built GenAI automation using Claude SDK and AWS Bedrock for technical support</li>
-        </ul>
-        <div class="timeline-tags">
-          <span class="timeline-tag">Claude SDK</span><span class="timeline-tag">AWS Bedrock</span>
-          <span class="timeline-tag">LangGraph</span><span class="timeline-tag">RAG</span>
-          <span class="timeline-tag">LLMOps</span><span class="timeline-tag">Kubernetes</span><span class="timeline-tag">ArgoCD</span>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-meta">
-          <span class="timeline-role">Software Development Engineer II</span>
-          <span>·</span>
-          <span class="timeline-company">Amazon</span>
-          <span class="timeline-period">Jun 2022 – Aug 2024</span>
-        </div>
-        <div class="timeline-loc">Vancouver, BC</div>
-        <ul class="timeline-body">
-          <li>Senior engineer on AWS Trusted Advisor Priority and Customer Management Console (~50,000 DAU); expanded to 5 air-gapped partitions and regions</li>
-          <li>Designed complex data-ingestion pipelines: EventBridge, SNS, SQS, Lambda, Apache Flink, Kinesis with retry/DLQ and idempotent processing</li>
-          <li>Served as Application Security Guardian — led AppSec reviews, three-nines on-call</li>
-          <li>Reduced operational load 50%+ via statistical analysis, Python CLIs, and GenAI-assisted ticket diagnosis</li>
-        </ul>
-        <div class="timeline-tags">
-          <span class="timeline-tag">AWS</span><span class="timeline-tag">ECS/Fargate</span>
-          <span class="timeline-tag">CloudFormation</span><span class="timeline-tag">CDK</span>
-          <span class="timeline-tag">Apache Flink</span><span class="timeline-tag">Java</span><span class="timeline-tag">Python</span><span class="timeline-tag">Kotlin</span>
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-box">
+          <div class="timeline-meta">
+            <span class="timeline-role">Senior IT DevOps Developer</span>
+            <span style="color:var(--muted)">·</span>
+            <span class="timeline-company">Upgrade Tech Inc.</span>
+            <span class="timeline-period">Jan 2025 – Feb 2026</span>
+          </div>
+          <div class="timeline-loc">Remote, Canada</div>
+          <ul class="timeline-body">
+            <li>Operationalized enterprise chatbots on Kore.ai → Sierra.ai; integrated RAG service for customer Q&amp;A with LLM-based developer chatbot framework</li>
+            <li>Designed LLMOps practices for multi-agent system — prompt engineering, agentic workflows, blue-green release patterns, incident runbooks</li>
+            <li>Built LLM-as-a-judge test-generation framework to automate evaluation of customer-service workflows</li>
+            <li>Built GenAI automation using Claude SDK and AWS Bedrock for technical support</li>
+          </ul>
+          <div class="timeline-tags">
+            <span class="timeline-tag">Claude SDK</span><span class="timeline-tag">AWS Bedrock</span>
+            <span class="timeline-tag">LangGraph</span><span class="timeline-tag">RAG</span>
+            <span class="timeline-tag">LLMOps</span><span class="timeline-tag">Kubernetes</span><span class="timeline-tag">ArgoCD</span>
+          </div>
         </div>
       </div>
 
-      <div class="timeline-item">
-        <div class="timeline-meta">
-          <span class="timeline-role">DevOps Engineer</span>
-          <span>·</span>
-          <span class="timeline-company">PitchPoint Solutions</span>
-          <span class="timeline-period">Nov 2020 – Mar 2022</span>
-        </div>
-        <div class="timeline-loc">Toronto, ON</div>
-        <ul class="timeline-body">
-          <li>Led end-to-end on-prem → GCP migration across dev, pre-prod, and prod</li>
-          <li>Architected HA Elasticsearch cluster on GKE (Helm/StatefulSets, pod anti-affinity, ILM hot/warm tiering) — reduced costs 80%</li>
-          <li>Migrated >10 TB SQL database to CloudSQL; built GitOps IaC + CI/CD with Terraform</li>
-        </ul>
-        <div class="timeline-tags">
-          <span class="timeline-tag">GKE</span><span class="timeline-tag">Kubernetes</span>
-          <span class="timeline-tag">Helm</span><span class="timeline-tag">Terraform</span>
-          <span class="timeline-tag">Elasticsearch</span><span class="timeline-tag">Datadog</span><span class="timeline-tag">GCP</span>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-meta">
-          <span class="timeline-role">Tools & Infrastructure Engineer</span>
-          <span>·</span>
-          <span class="timeline-company">Google / Apigee</span>
-          <span class="timeline-period">Nov 2018 – May 2019</span>
-        </div>
-        <div class="timeline-loc">California, USA (Contract)</div>
-        <ul class="timeline-body">
-          <li>Built Kubernetes orchestration framework for running E2E tests across 15,000+ configurations; Dockerized testing agents with autoscaling job workers</li>
-        </ul>
-        <div class="timeline-tags">
-          <span class="timeline-tag">Kubernetes</span><span class="timeline-tag">Docker</span>
-          <span class="timeline-tag">GCP</span><span class="timeline-tag">Airflow</span><span class="timeline-tag">Python</span>
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-box">
+          <div class="timeline-meta">
+            <span class="timeline-role">Software Development Engineer II</span>
+            <span style="color:var(--muted)">·</span>
+            <span class="timeline-company">Amazon</span>
+            <span class="timeline-period">Jun 2022 – Aug 2024</span>
+          </div>
+          <div class="timeline-loc">Vancouver, BC</div>
+          <ul class="timeline-body">
+            <li>Senior engineer on AWS Trusted Advisor Priority and Customer Management Console (~50,000 DAU); expanded to 5 air-gapped partitions and regions</li>
+            <li>Designed complex data-ingestion pipelines: EventBridge, SNS, SQS, Lambda, Apache Flink, Kinesis with retry/DLQ and idempotent processing</li>
+            <li>Served as Application Security Guardian — led AppSec reviews, three-nines on-call</li>
+            <li>Reduced operational load 50%+ via statistical analysis, Python CLIs, and GenAI-assisted ticket diagnosis</li>
+          </ul>
+          <div class="timeline-tags">
+            <span class="timeline-tag">AWS</span><span class="timeline-tag">ECS/Fargate</span>
+            <span class="timeline-tag">CloudFormation</span><span class="timeline-tag">CDK</span>
+            <span class="timeline-tag">Apache Flink</span><span class="timeline-tag">Java</span><span class="timeline-tag">Python</span><span class="timeline-tag">Kotlin</span>
+          </div>
         </div>
       </div>
 
-      <div class="timeline-item">
-        <div class="timeline-meta">
-          <span class="timeline-role">Software Engineer</span>
-          <span>·</span>
-          <span class="timeline-company">PayPal</span>
-          <span class="timeline-period">Jul 2016 – Oct 2018</span>
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-box">
+          <div class="timeline-meta">
+            <span class="timeline-role">DevOps Engineer</span>
+            <span style="color:var(--muted)">·</span>
+            <span class="timeline-company">PitchPoint Solutions</span>
+            <span class="timeline-period">Nov 2020 – Mar 2022</span>
+          </div>
+          <div class="timeline-loc">Toronto, ON</div>
+          <ul class="timeline-body">
+            <li>Led end-to-end on-prem → GCP migration across dev, pre-prod, and prod</li>
+            <li>Architected HA Elasticsearch cluster on GKE (Helm/StatefulSets, pod anti-affinity, ILM hot/warm tiering) — reduced costs 80%</li>
+            <li>Migrated &gt;10 TB SQL database to CloudSQL; built GitOps IaC + CI/CD with Terraform</li>
+          </ul>
+          <div class="timeline-tags">
+            <span class="timeline-tag">GKE</span><span class="timeline-tag">Kubernetes</span>
+            <span class="timeline-tag">Helm</span><span class="timeline-tag">Terraform</span>
+            <span class="timeline-tag">Elasticsearch</span><span class="timeline-tag">Datadog</span><span class="timeline-tag">GCP</span>
+          </div>
         </div>
-        <div class="timeline-loc">San Jose, CA</div>
-        <ul class="timeline-body">
-          <li>Built ETL pipelines in Spark/Airflow over Hadoop/HDFS; tuned partitioning/caching for multi-TB datasets</li>
-          <li>Open-source contributor to PayPal's Hadoop NameNode Analytics project; built Python public-key encryption library for Kafka cert rotation</li>
-        </ul>
-        <div class="timeline-tags">
-          <span class="timeline-tag">Apache Spark</span><span class="timeline-tag">Hadoop</span>
-          <span class="timeline-tag">Kafka</span><span class="timeline-tag">Java</span>
-          <span class="timeline-tag">Python</span><span class="timeline-tag">GCP</span><span class="timeline-tag">Docker</span>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-box">
+          <div class="timeline-meta">
+            <span class="timeline-role">Tools &amp; Infrastructure Engineer</span>
+            <span style="color:var(--muted)">·</span>
+            <span class="timeline-company">Google / Apigee</span>
+            <span class="timeline-period">Nov 2018 – May 2019</span>
+          </div>
+          <div class="timeline-loc">California, USA (Contract)</div>
+          <ul class="timeline-body">
+            <li>Built Kubernetes orchestration framework for running E2E tests across 15,000+ configurations; Dockerized testing agents with autoscaling job workers</li>
+          </ul>
+          <div class="timeline-tags">
+            <span class="timeline-tag">Kubernetes</span><span class="timeline-tag">Docker</span>
+            <span class="timeline-tag">GCP</span><span class="timeline-tag">Airflow</span><span class="timeline-tag">Python</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-box">
+          <div class="timeline-meta">
+            <span class="timeline-role">Software Engineer</span>
+            <span style="color:var(--muted)">·</span>
+            <span class="timeline-company">PayPal</span>
+            <span class="timeline-period">Jul 2016 – Oct 2018</span>
+          </div>
+          <div class="timeline-loc">San Jose, CA</div>
+          <ul class="timeline-body">
+            <li>Built ETL pipelines in Spark/Airflow over Hadoop/HDFS; tuned partitioning/caching for multi-TB datasets</li>
+            <li>Open-source contributor to PayPal's Hadoop NameNode Analytics project; built Python public-key encryption library for Kafka cert rotation</li>
+          </ul>
+          <div class="timeline-tags">
+            <span class="timeline-tag">Apache Spark</span><span class="timeline-tag">Hadoop</span>
+            <span class="timeline-tag">Kafka</span><span class="timeline-tag">Java</span>
+            <span class="timeline-tag">Python</span><span class="timeline-tag">GCP</span><span class="timeline-tag">Docker</span>
+          </div>
         </div>
       </div>
 
@@ -727,8 +1243,8 @@
 <!-- CERTS & EDUCATION -->
 <div class="container">
   <section id="certs">
-    <h2 class="section-title">Certifications & Education</h2>
-    <div class="cert-row">
+    <h2 class="section-title">Certifications &amp; Education</h2>
+    <div class="cert-row reveal-group">
       <div class="cert-card">
         <span class="cert-icon">🏅</span>
         <div>
@@ -754,11 +1270,44 @@
   </section>
 </div>
 
+<!-- RESEARCH -->
+<div class="container">
+  <section id="research">
+    <h2 class="section-title">Research</h2>
+    <div class="paper-card reveal">
+      <div class="paper-venue">📄 LREC 2016 · Portorož, Slovenia · May 2016</div>
+      <div class="paper-title">Edison: Feature Extraction for NLP, Simplified</div>
+      <div class="paper-authors">
+        M. Sammons, C. Christodoulopoulos, P. Kordjamshidi, D. Khashabi, V. Srikumar,
+        <strong>P. Vijayakumar</strong>, M. Bokhari, X. Wu &amp; D. Roth
+        &nbsp;·&nbsp; University of Illinois at Urbana-Champaign
+      </div>
+      <p class="paper-abstract">
+        Edison is a feature extraction library for NLP that simplifies the process of defining
+        and generating features for structured prediction tasks. It provides a unified interface
+        over Illinois NLP tools and supports a wide range of linguistic annotation types —
+        enabling rapid prototyping of NLP pipelines with minimal boilerplate. Published at the
+        10th International Conference on Language Resources and Evaluation.
+      </p>
+      <div class="paper-links">
+        <a href="http://www.lrec-conf.org/proceedings/lrec2016/pdf/999_Paper.pdf"
+           target="_blank" class="paper-link paper-link-primary">
+          📄 Read Paper (PDF)
+        </a>
+        <a href="http://www.lrec-conf.org/proceedings/lrec2016/summaries/999.html"
+           target="_blank" class="paper-link paper-link-secondary">
+          🔗 LREC Proceedings
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
 <!-- CONTACT -->
 <div class="container">
-  <section id="contact">
+  <section id="contact" style="padding-bottom: 6rem;">
     <h2 class="section-title">Contact</h2>
-    <div class="contact-grid">
+    <div class="contact-grid reveal-group">
       <a href="mailto:therealpj92@gmail.com" class="contact-link">
         <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0114.25 14H1.75A1.75 1.75 0 010 12.25v-8.5C0 2.784.784 2 1.75 2zM1.5 4.307v7.943c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25V4.307l-5.148 3.099a2.25 2.25 0 01-2.304 0L1.5 4.307zm13-1.265l-5.985 3.604a.75.75 0 01-.768 0L1.5 3.042v-.292a.25.25 0 01.25-.25h12.5a.25.25 0 01.25.25v.292z"/></svg>
         therealpj92@gmail.com
@@ -768,23 +1317,27 @@
         github.com/pjvjay
       </a>
       <a href="https://linkedin.com/in/paulvijayakumar" class="contact-link" target="_blank">
-        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.175v13.65C16 15.487 15.474 16 14.825 16H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 01.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/></svg>
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 01.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/></svg>
         LinkedIn
       </a>
     </div>
   </section>
 </div>
 
+<footer>
+  <span style="background: linear-gradient(90deg,#a78bfa,#38bdf8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Paul Vijayakumar</span>
+  &nbsp;·&nbsp; Built with GitHub Pages &nbsp;·&nbsp; <a href="https://github.com/pjvjay" target="_blank" style="-webkit-text-fill-color: var(--muted); color: var(--muted);">github.com/pjvjay</a>
+</footer>
+
 <script>
-  // Filter tabs
-  const tabs = document.querySelectorAll('.filter-tab');
+  // ── FILTER TABS ───────────────────────────────────────────────
+  const tabs  = document.querySelectorAll('.filter-tab');
   const cards = document.querySelectorAll('.project-card');
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-
       const filter = tab.dataset.filter;
       cards.forEach(card => {
         if (filter === 'all' || card.dataset.category === filter) {
@@ -795,11 +1348,25 @@
       });
     });
   });
+
+  // ── SCROLL REVEAL ─────────────────────────────────────────────
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal, .reveal-group').forEach(el => {
+    observer.observe(el);
+  });
+
+  // Hero is always visible — trigger immediately
+  document.querySelectorAll('#hero .reveal, #hero .reveal-group').forEach(el => {
+    el.classList.add('visible');
+  });
 </script>
-
-<footer>
-  built with ♥ and too much coffee · <a href="https://github.com/pjvjay">github.com/pjvjay</a>
-</footer>
-
 </body>
 </html>
