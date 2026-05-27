@@ -189,11 +189,34 @@
     }
 
     /* ── PROJECTS ────────────────────────────────────── */
+    .filter-tabs {
+      display: flex; flex-wrap: wrap; gap: .5rem;
+      margin-bottom: 1.75rem;
+    }
+    .filter-tab {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: .35rem .9rem;
+      font-size: .78rem;
+      font-family: var(--mono);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+      user-select: none;
+    }
+    .filter-tab:hover { border-color: var(--accent); color: var(--text); }
+    .filter-tab.active { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 600; }
+    .filter-tab[data-filter="ai"].active     { background: var(--accent3); border-color: var(--accent3); }
+    .filter-tab[data-filter="devops"].active { background: var(--accent2); border-color: var(--accent2); color: #0d1117; }
+    .filter-tab[data-filter="social"].active { background: var(--warn);    border-color: var(--warn);    color: #0d1117; }
+
     .project-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1rem;
     }
+    .project-card[hidden] { display: none !important; }
     .project-card {
       background: var(--bg2);
       border: 1px solid var(--border);
@@ -475,9 +498,17 @@
 <div class="container">
   <section id="projects">
     <h2 class="section-title">Projects</h2>
+
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="ai">🤖 AI &amp; Agents</button>
+      <button class="filter-tab" data-filter="devops">☸️ DevOps &amp; Infra</button>
+      <button class="filter-tab" data-filter="social">📡 Social &amp; Streaming</button>
+    </div>
+
     <div class="project-grid">
 
-      <a href="https://github.com/pjvjay/llm-proxy" target="_blank" class="project-card">
+      <a href="https://github.com/pjvjay/llm-proxy" target="_blank" class="project-card" data-category="ai">
         <div class="project-header">
           <span class="project-icon">🛡️</span>
           <span class="project-link-icon">↗</span>
@@ -490,7 +521,7 @@
         </div>
       </a>
 
-      <a href="https://github.com/pjvjay/kickvoice" target="_blank" class="project-card">
+      <a href="https://github.com/pjvjay/kickvoice" target="_blank" class="project-card" data-category="social">
         <div class="project-header">
           <span class="project-icon">🎙️</span>
           <span class="project-link-icon">↗</span>
@@ -503,7 +534,7 @@
         </div>
       </a>
 
-      <a href="https://github.com/pjvjay/k8s-guestbook-monitoring" target="_blank" class="project-card">
+      <a href="https://github.com/pjvjay/k8s-guestbook-monitoring" target="_blank" class="project-card" data-category="devops">
         <div class="project-header">
           <span class="project-icon">☸️</span>
           <span class="project-link-icon">↗</span>
@@ -516,7 +547,7 @@
         </div>
       </a>
 
-      <a href="https://github.com/pjvjay/skyctl" target="_blank" class="project-card">
+      <a href="https://github.com/pjvjay/skyctl" target="_blank" class="project-card" data-category="social">
         <div class="project-header">
           <span class="project-icon">🦋</span>
           <span class="project-link-icon">↗</span>
@@ -529,7 +560,7 @@
         </div>
       </a>
 
-      <a href="https://github.com/pjvjay/transcribe" target="_blank" class="project-card">
+      <a href="https://github.com/pjvjay/transcribe" target="_blank" class="project-card" data-category="ai">
         <div class="project-header">
           <span class="project-icon">📝</span>
           <span class="project-link-icon">↗</span>
@@ -542,7 +573,7 @@
         </div>
       </a>
 
-      <a href="https://github.com/pjvjay/reddit-truth-auditor" target="_blank" class="project-card">
+      <a href="https://github.com/pjvjay/reddit-truth-auditor" target="_blank" class="project-card" data-category="ai">
         <div class="project-header">
           <span class="project-icon">🔍</span>
           <span class="project-link-icon">↗</span>
@@ -555,7 +586,7 @@
         </div>
       </a>
 
-      <a href="https://github.com/pjvjay/article-illustrator" target="_blank" class="project-card">
+      <a href="https://github.com/pjvjay/article-illustrator" target="_blank" class="project-card" data-category="ai">
         <div class="project-header">
           <span class="project-icon">🖼️</span>
           <span class="project-link-icon">↗</span>
@@ -568,7 +599,7 @@
         </div>
       </a>
 
-      <a href="https://github.com/pjvjay/kick-chat-monitor" target="_blank" class="project-card">
+      <a href="https://github.com/pjvjay/kick-chat-monitor" target="_blank" class="project-card" data-category="social">
         <div class="project-header">
           <span class="project-icon">💬</span>
           <span class="project-link-icon">↗</span>
@@ -743,6 +774,28 @@
     </div>
   </section>
 </div>
+
+<script>
+  // Filter tabs
+  const tabs = document.querySelectorAll('.filter-tab');
+  const cards = document.querySelectorAll('.project-card');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const filter = tab.dataset.filter;
+      cards.forEach(card => {
+        if (filter === 'all' || card.dataset.category === filter) {
+          card.removeAttribute('hidden');
+        } else {
+          card.setAttribute('hidden', '');
+        }
+      });
+    });
+  });
+</script>
 
 <footer>
   built with ♥ and too much coffee · <a href="https://github.com/pjvjay">github.com/pjvjay</a>
